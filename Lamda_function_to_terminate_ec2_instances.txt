@@ -9,8 +9,8 @@ def lambda_handler(event, context):
         if i[:1]=='i':
             r="ec2"
     # AWS credentials and region
-    aws_access_key = "AKIAQJEFKYUACELCJ7UV"
-    aws_secret_key = "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"
+    aws_access_key = ""
+    aws_secret_key = ""
     aws_region = "us-east-1"
     
     
