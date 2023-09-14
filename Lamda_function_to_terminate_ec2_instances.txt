@@ -1,0 +1,35 @@
+import json
+import boto3
+import ast
+def lambda_handler(event, context):
+    instances=event["instances"]
+    instances=ast.literal_eval(instances)
+    print(instances)
+    for i in instances:
+        if i[:1]=='i':
+            r="ec2"
+    # AWS credentials and region
+    aws_access_key = "AKIAQJEFKYUACELCJ7UV"
+    aws_secret_key = "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"
+    aws_region = "us-east-1"
+    
+    
+    # Initialize the Boto3 EC2 client
+    
+    ec2_client = boto3.client("ec2", region_name=aws_region,
+                              aws_access_key_id=aws_access_key,
+                              aws_secret_access_key=aws_secret_key)
+
+    # Define the instance IDs of the instances you want to terminate
+    
+
+    # Terminate instances
+    if r=="ec2":
+        response = ec2_client.terminate_instances(InstanceIds=instances)
+    else:
+        response="ok"
+    # Print the response
+    # for i in response:
+    #     if "TerminatingInstances" in i:
+    #         response="terminated"
+    return response

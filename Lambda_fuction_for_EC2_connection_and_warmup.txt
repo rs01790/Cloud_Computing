@@ -1,0 +1,70 @@
+import boto3
+import concurrent.futures
+import time
+import socket
+def lambda_handler(event, context):
+    resources = int(event["num_resources"])
+    instances=[]
+    instances_info = []
+    # AWS credentials and region
+    aws_access_key = "AKIAQJEFKYUACELCJ7UV"
+    aws_secret_key = "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"
+    aws_region = "us-east-1"
+    global user_data
+    user_data = '''#!/bin/bash
+sudo yum update -y
+sudo yum install python3 python3-pip -y
+cd /home/ec2-user/
+sudo pip3 install -r requirements.txt
+sudo /usr/local/bin/gunicorn app:app -b 0.0.0.0:80 -w 4 --daemon
+sudo /home/ec2-user/ python3 app.py'''
+    # EC2 instance details
+    image_id = "ami-04a1ca78d981d2b41"
+    instance_type = "t2.micro"
+    key_name = "ramandeepkp_us-east-1"
+    security_group_ids = ["ramandeep_sg_comm034"]
+    
+    # Create an EC2 client
+    ec2_client = boto3.client("ec2", region_name=aws_region,
+                              aws_access_key_id=aws_access_key,
+                              aws_secret_access_key=aws_secret_key)
+    
+    def launch_ec2_instance(_):
+        try:
+            response = ec2_client.run_instances(
+                ImageId=image_id,
+                MinCount=1,
+                KeyName=key_name,
+                MaxCount=1,
+                InstanceType=instance_type,
+                SecurityGroupIds=security_group_ids,
+                UserData=user_data
+            )
+            instance_id = response["Instances"][0]["InstanceId"]
+            time.sleep(1)
+            instance_info = {"InstanceId": instance_id}
+            instances_info.append(instance_info)
+            print(f"Launched EC2 instance: {instance_id}")
+            instances.append(instance_id)
+        except Exception as e:
+            print(f"Error launching EC2 instance: {e}")
+            
+    def launch_ec2_instances(num_instances):
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            executor.map(launch_ec2_instance, range(num_instances))
+    
+    
+    launch_ec2_instances(resources)
+    
+    for instance_info in instances_info:
+        instance_id = instance_info["InstanceId"]
+        response = ec2_client.describe_instances(InstanceIds=[instance_id])
+        dns_name = response["Reservations"][0]["Instances"][0]["PublicDnsName"]
+        instance_info["PublicDnsName"] = dns_name
+        public_ip = response["Reservations"][0]["Instances"][0].get("PublicIpAddress")
+        if public_ip:
+            instance_info["PublicIpAddress"] = public_ip
+    
+    
+    
+    return instances_info

@@ -1,0 +1,56 @@
+import boto3
+import json
+
+def lambda_handler(event, context):
+    ser = str(event["ser"])
+    num_resources = int(event["num_resources"])
+    h = int(event["h"])
+    d = int(event["d"])
+    t = int(event["t"])
+    p = int(event["p"])
+    sum_of_pl = event["sum_of_pl"]
+    avg_95 = event["avg_95"]
+    avg_99 = event["avg_99"]
+    total_billable_time = event["total_billable_time"]
+    total_cost = event["total_cost"]
+    
+    
+
+    
+    # Initialize the S3 client
+    s3_client = boto3.client('s3')
+    
+    # Read the existing JSON object from S3 if it exists
+    
+    try:
+        existing_object = s3_client.get_object(Bucket="raman-comm034", Key="data.json")
+        existing_data = json.loads(existing_object["Body"].read().decode("utf-8"))
+        print(existing_data)
+    except s3_client.exceptions.NoSuchKey:
+        existing_data = {"s": [], "r": [], "h": [], "d": [], "t": [], "p": [], "profit_loss": [], "av95": [], "av99": [], "time": [], "cost": []}
+    print(existing_data)
+    # Add the new data to the existing data
+    existing_data.setdefault("s", []).append(ser)
+    existing_data.setdefault("r", []).append(num_resources)
+    existing_data.setdefault("h", []).append(h)
+    existing_data.setdefault("d", []).append(d)
+    existing_data.setdefault("t", []).append(t)
+    existing_data.setdefault("p", []).append(p)
+    existing_data.setdefault("profit_loss", []).append(sum_of_pl)
+    existing_data.setdefault("av95", []).append(avg_95)
+    existing_data.setdefault("av99", []).append(avg_99)
+    existing_data.setdefault("time", []).append(total_billable_time)
+    existing_data.setdefault("cost", []).append(total_cost)
+     
+    add_data=json.dumps(existing_data) 
+    # Upload the updated JSON object back to S3
+    s3_client.put_object(
+        Bucket="raman-comm034",
+        Key="data.json",
+        Body=add_data.encode('utf-8')
+    )
+    
+    return {
+        "statusCode": 200,
+        "body": json.dumps("Data added successfully")
+    }
