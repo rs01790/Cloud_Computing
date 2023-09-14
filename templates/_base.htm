@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<link href="/static/def.css" rel="stylesheet" type="text/css" />
+<title>
+	{% block title %} replace title {% endblock %}
+</title>
+<style>
+        /* Add spacing to buttons */
+        .button-container {
+            display: flex;
+            gap: 10px; /* Adjust the gap value to your preference */
+        }
+    </style>
+</head>
+
+<body>
+	
+	<div id="page">
+		{% block pageblock %}
+			replace page
+		{% endblock %}
+	</div>
+</body>
+</html>

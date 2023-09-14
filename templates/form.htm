@@ -1,0 +1,19 @@
+<div id="down">
+    <h4> Please enter your specifications to calculate </h4>
+    <form id="requirements" method="post" action="/warmup">
+        <label for="service">Choose a scalable service:</label>
+        <select name="service">
+            <option value="ec2">Elastic Compute Cloud (EC2)</option>
+            <option value="lambda">Lambda</option>
+        </select>
+        <br><br>
+        <label for="resources">Number of resources:</label>
+        <input type="number" name="resources" placeholder="Please specify a number" />
+        <br><br>        
+        <input type="submit" id="startButton" name="warmup" value="Warmup" onclick="showWarmingUpMessage();" />
+    </form>
+	<br><br><br>
+	<form action="/next" method="get">
+        <button type="submit">Next</button>
+    </form>
+</div>

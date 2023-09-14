@@ -1,0 +1,37 @@
+<div id="down">
+    <h4> Please enter your specifications to calculate </h4>
+    <form id="requirements" method="post" action="/analyse">
+        
+        <select name="bs">
+            <option value="1">Buy</option>
+            <option value="0">Sell</option>
+        </select>
+        <br><br>
+        <label for="history">Price History:</label>
+        <input type="number" name="history" placeholder="Please specify a number" />
+        <br><br>
+		<label for="shots">Shots:</label>
+        <input type="number" name="shots" placeholder="Please specify a number" />
+		<br><br>
+		<label for="profit_loss">Number of of days after you wish to check profit/loss:</label>
+        <input type="number" name="profit_loss" placeholder="Please specify a number" />
+		<br><br>
+        <input type="submit" id="startButton1" name="analyse" value="analyse" />
+    </form>
+	<br><br>
+	<div class="button-container">
+	<form action="/resources_ready" method="get">
+        <button type="submit">Resources Ready</button>
+    </form>
+    
+    <form action="/get_warmup_cost" method="get">
+        <button type="submit">Warmup Cost</button>
+    </form>
+	<form action="/get_endpoints" method="get">
+        <button type="submit">Available Resources</button>
+    </form>
+	<form action="/results" method="get">
+        <button type="submit">Next</button>
+    </form>
+	</div>
+</div>

@@ -1,0 +1,41 @@
+{% extends "_base.htm" %}
+
+{% block title %}
+    COMM034 Coursework
+{% endblock %}
+
+{% block pageblock %}
+    <script>
+        function showWarmingUpMessage() {
+            document.getElementById('message').innerHTML = 'Warming up EC2/Lambda resources...';
+            document.getElementById('startButton').disabled = true; // Disable the button while warming up
+        }
+
+        function resourcesReady() {
+            document.getElementById('message').innerHTML = 'Resources are ready!';
+            document.getElementById('startButton').disabled = false; // Enable the button when resources are ready
+        }
+
+        function checkResourcesReady() {
+            // Make an AJAX request to /resources_ready
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/resources_ready', true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.warm) {
+                        resourcesReady();
+                    } else {
+                        setTimeout(checkResourcesReady, 1000); // Check again after 1 second
+                    }
+                }
+            };
+            xhr.send();
+        }
+    </script>
+    <div id = "up">
+        <h1>COMM034 CW <br>
+        Please enter the values to analyse the stock data of NFLX</h1>
+    </div>
+    {% include 'form.htm' %}
+{% endblock %}
